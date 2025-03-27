@@ -2,7 +2,7 @@ provider "aws" {
   region = "us-east-2"
 }
 
-# ✅ SNS Topic for Email Alerts
+# SNS Topic for Email Alerts
 resource "aws_sns_topic" "cpu_alerts" {
   name = "cpu-anomaly-alerts"
 }
@@ -10,10 +10,10 @@ resource "aws_sns_topic" "cpu_alerts" {
 resource "aws_sns_topic_subscription" "email_subscription" {
   topic_arn = aws_sns_topic.cpu_alerts.arn
   protocol  = "email"
-  endpoint  = "ashish.9.sharma@niit.com"  # 🔹 Replace with your email
+  endpoint  = "ashish.9.sharma@niit.com"  # Replace with your email
 }
 
-# ✅ EC2 Instance with CloudWatch Agent and Stress Tool
+# EC2 Instance with CloudWatch Agent and Stress Tool
 resource "aws_instance" "ec2_instance" {
   ami           = "ami-0cb91c7de36eed2cb"  # Replace with latest Amazon Linux AMI
   instance_type = "t2.micro"
@@ -24,7 +24,7 @@ resource "aws_instance" "ec2_instance" {
               sudo apt update -y
               sudo apt install -y stress
 
-              # ✅ Install CloudWatch Agent
+              #  Install CloudWatch Agent
               wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
               sudo dpkg -i amazon-cloudwatch-agent.deb
               sudo systemctl enable amazon-cloudwatch-agent
@@ -36,7 +36,7 @@ resource "aws_instance" "ec2_instance" {
   }
 }
 
-# ✅ Anomaly Detection for CPU Spikes
+#  Anomaly Detection for CPU Spikes
 resource "aws_cloudwatch_metric_alarm" "cpu_anomaly" {
   alarm_name          = "CPU_Anomaly_Detection"
   comparison_operator = "GreaterThanUpperThreshold"
@@ -44,7 +44,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_anomaly" {
   threshold_metric_id = "ad1"
   alarm_description   = "Triggers when CPU spikes beyond anomaly threshold"
   actions_enabled     = true
-  alarm_actions       = [aws_sns_topic.cpu_alerts.arn]  # 🔹 Sends email alert
+  alarm_actions       = [aws_sns_topic.cpu_alerts.arn]  # Sends email alert
 
   metric_query {
     id          = "m1"
@@ -67,7 +67,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_anomaly" {
   }
 }
 
-# ✅ **CPU Utilization > 95% Alarm (Sends Email)**
+# **CPU Utilization > 95% Alarm (Sends Email)**
 resource "aws_cloudwatch_metric_alarm" "cpu_threshold" {
   alarm_name          = "CPU_Threshold_Exceeded"
   comparison_operator = "GreaterThanThreshold"
@@ -75,7 +75,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_threshold" {
   threshold           = 75.0  # 🔥 **Triggers when CPU > 75%**
   alarm_description   = "Triggers when CPU utilization exceeds 75%"
   actions_enabled     = true
-  alarm_actions       = [aws_sns_topic.cpu_alerts.arn]  # ✅ Sends email
+  alarm_actions       = [aws_sns_topic.cpu_alerts.arn]  # Sends email
 
   metric_name = "CPUUtilization"
   namespace   = "AWS/EC2"
