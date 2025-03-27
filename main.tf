@@ -67,12 +67,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu_anomaly" {
   }
 }
 
-# **CPU Utilization > 95% Alarm (Sends Email)**
+# **CPU Utilization > 75% Alarm (Sends Email)**
 resource "aws_cloudwatch_metric_alarm" "cpu_threshold" {
   alarm_name          = "CPU_Threshold_Exceeded"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 2
-  threshold           = 75.0  # 🔥 **Triggers when CPU > 75%**
+  threshold           = 75.0  # **Triggers when CPU > 75%**
   alarm_description   = "Triggers when CPU utilization exceeds 75%"
   actions_enabled     = true
   alarm_actions       = [aws_sns_topic.cpu_alerts.arn]  # Sends email
